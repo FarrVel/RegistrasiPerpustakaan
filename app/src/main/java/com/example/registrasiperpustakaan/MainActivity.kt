@@ -39,7 +39,6 @@ class MainActivity : ComponentActivity() {
 fun LibraryApp() {
     val navController = rememberNavController()
 
-    // --- MENGHUBUNGKAN ROOM DATABASE KE VIEWMODEL ---
     val context = LocalContext.current
     val database = AppDatabase.getDatabase(context)
     val memberViewModel: MemberViewModel = viewModel(
@@ -48,7 +47,7 @@ fun LibraryApp() {
 
     NavHost(navController = navController, startDestination = "home") {
 
-        // Layar 0: Beranda Utama
+        // Layar 0: Dashboard Utama
         composable("home") {
             HomeScreen(
                 onNavigateToRegistration = { navController.navigate("registration") },
@@ -79,12 +78,29 @@ fun LibraryApp() {
                     navController.navigate("registration")
                 },
                 onNavigateToDetail = { memberId ->
+                    navController.navigate("detail/$memberId")
+                },
+                onNavigateToEdit = { memberId ->
                     navController.navigate("edit/$memberId")
                 }
             )
         }
 
-        // Layar 3: Detail & Edit Anggota
+        // Layar 3: Detail Anggota (Gambar 3)
+        composable(
+            route = "detail/{memberId}",
+            arguments = listOf(navArgument("memberId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val memberId = backStackEntry.arguments?.getString("memberId") ?: ""
+            DetailScreen(
+                memberId = memberId,
+                viewModel = memberViewModel,
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToEdit = { id -> navController.navigate("edit/$id") }
+            )
+        }
+
+        // Layar 4: Edit Anggota
         composable(
             route = "edit/{memberId}",
             arguments = listOf(navArgument("memberId") { type = NavType.StringType })

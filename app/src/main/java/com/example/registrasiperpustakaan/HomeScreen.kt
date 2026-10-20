@@ -1,10 +1,16 @@
 package com.example.registrasiperpustakaan
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -15,59 +21,74 @@ fun HomeScreen(
     onNavigateToRegistration: () -> Unit,
     onNavigateToList: () -> Unit
 ) {
+    val navyBlue = Color(0xFF0A2E65)
+    val accentBlue = Color(0xFF1554D1)
+    val bgLight = Color(0xFFF4F6FA)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(bgLight)
             .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center // Posisi di tengah layar
+        verticalArrangement = Arrangement.Center
     ) {
-        // 1. Header: Logo (Menggunakan Emoji Buku agar aman)
-        Text(
-            text = "📚",
-            fontSize = 80.sp,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+        Surface(
+            shape = RoundedCornerShape(24.dp),
+            color = navyBlue,
+            modifier = Modifier.size(96.dp),
+            shadowElevation = 6.dp
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = Icons.Default.MenuBook,
+                    contentDescription = "Logo Perpustakaan",
+                    tint = Color.White,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+        }
 
-        // 2. Teks Judul Besar
+        Spacer(modifier = Modifier.height(24.dp))
+
         Text(
             text = "LibraryReg",
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
+            fontSize = 32.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = navyBlue
         )
 
-        // 3. Deskripsi Singkat
         Text(
             text = "Sistem Pendaftaran Anggota Perpustakaan",
-            style = MaterialTheme.typography.bodyLarge,
+            fontSize = 15.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 8.dp, bottom = 48.dp),
-            color = MaterialTheme.colorScheme.secondary
+            color = Color(0xFF64748B)
         )
 
-        // 4. Kontrol Utama: Tombol Pendaftaran Anggota
         Button(
             onClick = onNavigateToRegistration,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp), // Dibuat ukuran besar agar mudah diklik
-            shape = MaterialTheme.shapes.medium
+                .height(54.dp),
+            shape = RoundedCornerShape(14.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = navyBlue)
         ) {
-            Text("Pendaftaran Anggota", fontSize = 18.sp)
+            Text("Pendaftaran Anggota", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
         }
 
-        Spacer(modifier = Modifier.height(16.dp)) // Jarak antar tombol
+        Spacer(modifier = Modifier.height(14.dp))
 
-        // 5. Kontrol Utama: Tombol Daftar Anggota (Desain Outlined agar berbeda)
         OutlinedButton(
             onClick = onNavigateToList,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
-            shape = MaterialTheme.shapes.medium
+                .height(54.dp),
+            shape = RoundedCornerShape(14.dp),
+            border = BorderStroke(1.5.dp, accentBlue),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = accentBlue)
         ) {
-            Text("Daftar Anggota", fontSize = 18.sp)
+            Text("Daftar Anggota", fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
