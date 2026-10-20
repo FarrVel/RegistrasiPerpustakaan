@@ -9,7 +9,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -38,17 +37,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun LibraryApp() {
     val navController = rememberNavController()
+    val memberViewModel: MemberViewModel = viewModel()
 
-    // Menghubungkan Room Database ke ViewModel melalui Factory
-    val context = LocalContext.current
-    val database = AppDatabase.getDatabase(context)
-    val memberViewModel: MemberViewModel = viewModel(
-        factory = MemberViewModelFactory(database.memberDao())
-    )
-
+    // UBAH: startDestination sekarang adalah "home"
     NavHost(navController = navController, startDestination = "home") {
 
-        // Layar 0: Dashboard Utama (Menu)
+        // Layar 0: Beranda Utama (Menu)
         composable("home") {
             HomeScreen(
                 onNavigateToRegistration = { navController.navigate("registration") },
@@ -66,6 +60,7 @@ fun LibraryApp() {
                     }
                 },
                 onNavigateBack = {
+                    // Perintah untuk mencabut layar saat ini dan kembali ke layar sebelumnya
                     navController.popBackStack()
                 }
             )
@@ -79,29 +74,12 @@ fun LibraryApp() {
                     navController.navigate("registration")
                 },
                 onNavigateToDetail = { memberId ->
-                    navController.navigate("detail/$memberId")
-                },
-                onNavigateToEdit = { memberId ->
                     navController.navigate("edit/$memberId")
                 }
             )
         }
 
-        // Layar 3: Detail Anggota
-        composable(
-            route = "detail/{memberId}",
-            arguments = listOf(navArgument("memberId") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val memberId = backStackEntry.arguments?.getString("memberId") ?: ""
-            DetailScreen(
-                memberId = memberId,
-                viewModel = memberViewModel,
-                onNavigateBack = { navController.popBackStack() },
-                onNavigateToEdit = { id -> navController.navigate("edit/$id") }
-            )
-        }
-
-        // Layar 4: Edit Anggota
+        // Layar 3: Detail & Edit Anggota
         composable(
             route = "edit/{memberId}",
             arguments = listOf(navArgument("memberId") { type = NavType.StringType })
