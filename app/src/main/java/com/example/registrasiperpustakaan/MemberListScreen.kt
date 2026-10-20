@@ -15,9 +15,10 @@ import androidx.compose.ui.unit.dp
 fun MemberListScreen(
     viewModel: MemberViewModel,
     onNavigateToRegistration: () -> Unit,
-    onNavigateToDetail: (String) -> Unit // Persiapan untuk pindah ke layar Edit/Detail
+    onNavigateToDetail: (String) -> Unit
 ) {
-    val memberList = viewModel.memberList
+    // PERUBAHAN PENTING: Mengumpulkan data dari Flow menjadi State Compose
+    val memberList by viewModel.memberList.collectAsState()
 
     // State untuk menyimpan teks pencarian
     var searchQuery by remember { mutableStateOf("") }
@@ -74,7 +75,7 @@ fun MemberListScreen(
                         MemberCard(
                             member = member,
                             onDeleteClick = { viewModel.deleteMember(member) },
-                            onDetailClick = { onNavigateToDetail(member.id) } // Mengirim ID saat tombol ditekan
+                            onDetailClick = { onNavigateToDetail(member.id) }
                         )
                     }
                 }
